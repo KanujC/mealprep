@@ -7,7 +7,6 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyDB = any;
 
-// Browser/client singleton
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let clientInstance: SupabaseClient<AnyDB> | null = null;
 

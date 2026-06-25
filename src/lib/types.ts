@@ -48,7 +48,6 @@ export interface Extra {
   calories: number;
 }
 
-// Enriched types for UI
 export interface MealWithDish extends Meal {
   dish?: Dish;
   meal_members: (MealMember & { member: Member })[];

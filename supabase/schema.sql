@@ -1,12 +1,6 @@
--- ============================================================
 -- Meal Planner Schema
--- Run this in Supabase SQL editor or via psql
--- ============================================================
-
--- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- Members
 CREATE TABLE IF NOT EXISTS members (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL UNIQUE,
@@ -14,7 +8,6 @@ CREATE TABLE IF NOT EXISTS members (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Dish library
 CREATE TABLE IF NOT EXISTS dishes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL UNIQUE,
@@ -29,7 +22,6 @@ CREATE TABLE IF NOT EXISTS dishes (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Meals
 CREATE TABLE IF NOT EXISTS meals (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   date DATE NOT NULL,
@@ -42,7 +34,6 @@ CREATE TABLE IF NOT EXISTS meals (
   UNIQUE(date, meal_type)
 );
 
--- Per-member meal data
 CREATE TABLE IF NOT EXISTS meal_members (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   meal_id UUID NOT NULL REFERENCES meals(id) ON DELETE CASCADE,
@@ -54,7 +45,6 @@ CREATE TABLE IF NOT EXISTS meal_members (
   UNIQUE(meal_id, member_id)
 );
 
--- Extras (nuts, skyr, etc.)
 CREATE TABLE IF NOT EXISTS extras (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   date DATE NOT NULL,
@@ -64,33 +54,23 @@ CREATE TABLE IF NOT EXISTS extras (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- ============================================================
--- Indexes
--- ============================================================
 CREATE INDEX IF NOT EXISTS idx_meals_date ON meals(date);
 CREATE INDEX IF NOT EXISTS idx_meal_members_meal_id ON meal_members(meal_id);
 CREATE INDEX IF NOT EXISTS idx_meal_members_member_id ON meal_members(member_id);
 CREATE INDEX IF NOT EXISTS idx_extras_date_member ON extras(date, member_id);
 
--- ============================================================
--- Row Level Security (allow anonymous read/write for household use)
--- ============================================================
 ALTER TABLE members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE dishes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE meals ENABLE ROW LEVEL SECURITY;
 ALTER TABLE meal_members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE extras ENABLE ROW LEVEL SECURITY;
 
--- Allow all for anon (passcode gate is at app level)
 CREATE POLICY "allow_all_members" ON members FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "allow_all_dishes" ON dishes FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "allow_all_meals" ON meals FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "allow_all_meal_members" ON meal_members FOR ALL TO anon USING (true) WITH CHECK (true);
 CREATE POLICY "allow_all_extras" ON extras FOR ALL TO anon USING (true) WITH CHECK (true);
 
--- ============================================================
--- Realtime
--- ============================================================
 ALTER PUBLICATION supabase_realtime ADD TABLE meals;
 ALTER PUBLICATION supabase_realtime ADD TABLE meal_members;
 ALTER PUBLICATION supabase_realtime ADD TABLE extras;
