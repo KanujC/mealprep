@@ -35,6 +35,7 @@ export interface MealMember {
   id: string;
   meal_id: string;
   member_id: string;
+  dish_id?: string | null; // member-specific dish override (e.g. Anshia's breakfast)
   calories: number | null;
   includes_chicken: boolean;
   is_paneer_swap: boolean;
@@ -51,7 +52,7 @@ export interface Extra {
 // Enriched types for UI
 export interface MealWithDish extends Meal {
   dish?: Dish;
-  meal_members: (MealMember & { member: Member })[];
+  meal_members: (MealMember & { member: Member; member_dish?: Dish })[];
 }
 
 export interface DayPlan {

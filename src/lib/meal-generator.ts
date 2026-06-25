@@ -5,6 +5,7 @@ interface GeneratedMeal {
   date: string;
   meal_type: MealType;
   dish_id: string | null;
+  anshia_dish_id: string | null; // member-specific dish override for Anshia (breakfast)
   is_leftover_of_dish_id: string | null; // the dinner dish id that this lunch is from
   eating_out: boolean;
   eating_out_label: string | null;
@@ -15,6 +16,7 @@ interface GeneratedMeal {
 }
 
 const WEEKEND_BREAKFASTS = ["Cheela", "Sandwich", "Idli"];
+const ANSHIA_WEEKDAY_BREAKFASTS = ["Brötchen with Hummus", "Cereal with Protein Milk"];
 
 function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -47,6 +49,10 @@ export function generateWeek(
   // Track non-easy dinner usage this week
   const usedNonEasyDinners = new Set<string>();
 
+  // Alternate Anshia's weekday breakfast by week number
+  const weekNum = Math.floor(weekDates[0].getTime() / (7 * 24 * 60 * 60 * 1000));
+  const anshiaWeekdayBreakfastName = ANSHIA_WEEKDAY_BREAKFASTS[weekNum % 2];
+
   const results: Omit<GeneratedMeal, "kanuj_calories" | "anshia_calories">[] =
     [];
 
@@ -75,18 +81,23 @@ export function generateWeek(
 
     // --- Breakfast ---
     let breakfastDish: Dish | null = null;
+    let anshiaBreakfastDish: Dish | null = null;
     if (weekend) {
-      const idx = i === 5 ? 0 : 1; // Sat → idx 0, Sun → idx 1 (simple rotation)
+      const idx = i === 5 ? 0 : 1;
       const name = WEEKEND_BREAKFASTS[idx % WEEKEND_BREAKFASTS.length];
       breakfastDish =
         breakfastPool.find((d) => d.name === name) ??
         breakfastPool[0] ??
         null;
+      anshiaBreakfastDish = null; // same dish on weekends
     } else {
-      // Weekday: kanuj gets Oats+protein+seeds, Anshia rotates
+      // Kanuj always gets Oats & Protein; Anshia rotates between Brötchen/Cereal
       breakfastDish =
         breakfastPool.find((d) => d.name === "Oats & Protein") ??
         breakfastPool[0] ??
+        null;
+      anshiaBreakfastDish =
+        breakfastPool.find((d) => d.name === anshiaWeekdayBreakfastName) ??
         null;
     }
 
@@ -94,6 +105,7 @@ export function generateWeek(
       date: dateStr,
       meal_type: "breakfast",
       dish_id: breakfastDish?.id ?? null,
+      anshia_dish_id: anshiaBreakfastDish?.id ?? null,
       is_leftover_of_dish_id: null,
       eating_out: false,
       eating_out_label: null,
@@ -133,6 +145,7 @@ export function generateWeek(
       date: dateStr,
       meal_type: "lunch",
       dish_id: lunchDish?.id ?? null,
+      anshia_dish_id: null,
       is_leftover_of_dish_id: isLeftoverOf,
       eating_out: false,
       eating_out_label: null,
@@ -146,6 +159,7 @@ export function generateWeek(
       date: dateStr,
       meal_type: "snack",
       dish_id: snackDish?.id ?? null,
+      anshia_dish_id: null,
       is_leftover_of_dish_id: null,
       eating_out: false,
       eating_out_label: null,
@@ -162,6 +176,7 @@ export function generateWeek(
       date: dateStr,
       meal_type: "dinner",
       dish_id: dinner?.id ?? null,
+      anshia_dish_id: null,
       is_leftover_of_dish_id: null,
       eating_out: false,
       eating_out_label: null,

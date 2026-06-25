@@ -30,17 +30,20 @@ export function Dialog({ open, onClose, children, className }: DialogProps) {
       />
       <div
         className={cn(
-          "relative bg-[var(--card)] rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto animate-slide-in",
+          "relative bg-[var(--card)] rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col animate-slide-in",
           className
         )}
       >
+        {/* Close button lives outside the scroll container so it stays visible */}
         <button
           onClick={onClose}
           className="absolute top-3 right-3 p-1.5 rounded-lg hover:bg-[var(--muted)] text-[var(--muted-foreground)] transition-colors z-10"
         >
           <X size={16} />
         </button>
-        {children}
+        <div className="overflow-y-auto flex-1">
+          {children}
+        </div>
       </div>
     </div>
   );

@@ -75,6 +75,7 @@ export function useWeekPlan(anchorDate: Date = new Date()): WeekPlanData {
           .map((mm) => ({
             ...mm,
             member: membersData.find((m) => m.id === mm.member_id)!,
+            member_dish: mm.dish_id ? dishesData.find((d) => d.id === mm.dish_id) : undefined,
           })),
       }));
 

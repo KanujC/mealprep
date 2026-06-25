@@ -106,11 +106,23 @@ export function MealCell({
           </p>
         ) : dish ? (
           <div>
-            <p className="text-sm font-semibold text-[var(--foreground)] leading-tight truncate">
-              {anshiaMM?.is_paneer_swap
-                ? dish.name.replace(/chicken/i, "Paneer")
-                : dish.name}
-            </p>
+            {anshiaMM?.member_dish && anshiaMM.member_dish.id !== dish.id ? (
+              // Split breakfast: Kanuj and Anshia have different dishes
+              <>
+                <p className="text-[10px] text-[var(--muted-foreground)] leading-tight">
+                  <span style={{ color: "#b45309" }}>K</span> {dish.name}
+                </p>
+                <p className="text-[10px] text-[var(--muted-foreground)] leading-tight">
+                  <span style={{ color: "#7c3aed" }}>A</span> {anshiaMM.member_dish.name}
+                </p>
+              </>
+            ) : (
+              <p className="text-sm font-semibold text-[var(--foreground)] leading-tight truncate">
+                {anshiaMM?.is_paneer_swap
+                  ? dish.name.replace(/chicken/i, "Paneer")
+                  : dish.name}
+              </p>
+            )}
             {dish.serve_with && dish.serve_with !== "none" && (
               <span className="text-[10px] text-[var(--muted-foreground)]">
                 with {dish.serve_with}
@@ -159,7 +171,8 @@ export function MealCell({
           onShuffle();
         }}
         className={cn(
-          "absolute top-2 right-2 p-1 rounded-lg opacity-0 group-hover:opacity-100 transition-all",
+          "absolute top-2 right-2 p-1 rounded-lg transition-all",
+          "sm:opacity-0 sm:group-hover:opacity-100",
           "hover:bg-[var(--muted)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
         )}
         title="Shuffle this meal"

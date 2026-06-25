@@ -68,8 +68,9 @@ export async function POST(req: NextRequest) {
 
     // Insert meal_members for both
     const dish = dishes.find((d) => d.id === gm.dish_id);
+    const anshiaDish = gm.anshia_dish_id ? dishes.find((d) => d.id === gm.anshia_dish_id) : dish;
     const kanujCalories = dish?.base_calories_kanuj ?? 0;
-    const anshiaCalories = dish?.base_calories_anshia ?? 0;
+    const anshiaCalories = anshiaDish?.base_calories_anshia ?? 0;
 
     await supabase.from("meal_members").insert([
       {
@@ -82,6 +83,7 @@ export async function POST(req: NextRequest) {
       {
         meal_id: meal.id,
         member_id: anshia.id,
+        dish_id: gm.anshia_dish_id ?? null,
         calories: anshiaCalories || null,
         includes_chicken: false,
         is_paneer_swap: gm.anshia_is_paneer_swap,

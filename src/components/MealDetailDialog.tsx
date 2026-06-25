@@ -253,14 +253,25 @@ export function MealDetailDialog({
                   />
                 ) : dish ? (
                   <>
-                    <p className="font-semibold text-[var(--foreground)] mb-2">
-                      {dish.name}
-                      {dish.serve_with && dish.serve_with !== "none" && (
-                        <span className="text-xs font-normal text-[var(--muted-foreground)] ml-2">
-                          with {dish.serve_with}
-                        </span>
-                      )}
-                    </p>
+                    {anshiaMM?.member_dish && anshiaMM.member_dish.id !== dish.id ? (
+                      <div className="mb-2 space-y-0.5">
+                        <p className="text-sm font-semibold" style={{ color: "#b45309" }}>
+                          K: {dish.name}
+                        </p>
+                        <p className="text-sm font-semibold" style={{ color: "#7c3aed" }}>
+                          A: {anshiaMM.member_dish.name}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="font-semibold text-[var(--foreground)] mb-2">
+                        {dish.name}
+                        {dish.serve_with && dish.serve_with !== "none" && (
+                          <span className="text-xs font-normal text-[var(--muted-foreground)] ml-2">
+                            with {dish.serve_with}
+                          </span>
+                        )}
+                      </p>
+                    )}
 
                     {/* Per-member calorie edit */}
                     <div className="space-y-2">
