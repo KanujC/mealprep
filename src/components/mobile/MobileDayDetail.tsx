@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Shuffle } from "lucide-react";
 import { MEAL_TYPES, MealType, MealWithDish, Member, CHICKEN_ADDON_KCAL } from "@/lib/types";
 import { parseDate, shortDay, shortDate } from "@/lib/utils";
 
@@ -24,9 +24,10 @@ interface Props {
   kanuj: Member;
   anshia: Member;
   onLongPress: (meal: MealWithDish, mealType: MealType) => void;
+  onShuffle: (meal: MealWithDish, mealType: MealType) => void;
 }
 
-export function MobileDayDetail({ dateStr, meals, kanuj, anshia, onLongPress }: Props) {
+export function MobileDayDetail({ dateStr, meals, kanuj, anshia, onLongPress, onShuffle }: Props) {
   const date = parseDate(dateStr);
   return (
     <div className="px-4 pt-4 pb-28">
@@ -44,6 +45,7 @@ export function MobileDayDetail({ dateStr, meals, kanuj, anshia, onLongPress }: 
               kanuj={kanuj}
               anshia={anshia}
               onLongPress={() => meal && onLongPress(meal, mealType)}
+              onShuffle={() => meal && onShuffle(meal, mealType)}
             />
           );
         })}
@@ -53,13 +55,14 @@ export function MobileDayDetail({ dateStr, meals, kanuj, anshia, onLongPress }: 
 }
 
 function MealCard({
-  meal, mealType, kanuj, anshia, onLongPress,
+  meal, mealType, kanuj, anshia, onLongPress, onShuffle,
 }: {
   meal: MealWithDish | undefined;
   mealType: MealType;
   kanuj: Member;
   anshia: Member;
   onLongPress: () => void;
+  onShuffle: () => void;
 }) {
   const timerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const movedRef = React.useRef(false);
@@ -108,19 +111,30 @@ function MealCard({
     >
       <div className="px-3.5 py-3">
         {/* Header row */}
-        <div className="flex items-start justify-between mb-1">
+        <div className="flex items-center justify-between mb-1">
           <span className="text-[9px] font-bold uppercase tracking-widest text-[var(--muted-foreground)]">
             {LABEL[mealType]}
           </span>
-          {isLeftoverLunch && (
-            <span className="flex items-center gap-0.5 text-[9px] text-[var(--muted-foreground)] bg-[var(--muted)] px-1.5 py-0.5 rounded-full">
-              <RotateCcw size={8} />
-              leftover
-            </span>
-          )}
-          {isEatingOut && !isLeftoverLunch && (
-            <span className="text-[9px] font-medium text-blue-500">Eating out</span>
-          )}
+          <div className="flex items-center gap-1.5">
+            {isLeftoverLunch && (
+              <span className="flex items-center gap-0.5 text-[9px] text-[var(--muted-foreground)] bg-[var(--muted)] px-1.5 py-0.5 rounded-full">
+                <RotateCcw size={8} />
+                leftover
+              </span>
+            )}
+            {isEatingOut && !isLeftoverLunch && (
+              <span className="text-[9px] font-medium text-blue-500">Eating out</span>
+            )}
+            {(mealType === "lunch" || mealType === "dinner") && meal && (
+              <button
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => { e.stopPropagation(); onShuffle(); }}
+                className="p-1 rounded-lg active:bg-[var(--muted)] text-[var(--muted-foreground)]"
+              >
+                <Shuffle size={12} />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Content */}

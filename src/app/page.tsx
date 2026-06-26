@@ -354,6 +354,7 @@ function App() {
                 kanuj={kanuj}
                 anshia={anshia}
                 onLongPress={(meal, mealType) => setActionSheet({ meal, mealType })}
+                onShuffle={(meal, mealType) => shuffleMeal(meal, mealType, selectedDate)}
               />
             ) : (
               <div className="flex flex-col items-center justify-center py-24 px-8 text-center gap-4">
