@@ -326,7 +326,7 @@ export function MealDetailDialog({
                           <CalorieInput
                             value={
                               anshiaMM.calories ??
-                              dish.base_calories_anshia
+                              (anshiaMM.member_dish?.base_calories_anshia ?? dish.base_calories_anshia)
                             }
                             onChange={(v) => updateCalories(anshiaMM.id, v)}
                           />

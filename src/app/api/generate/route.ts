@@ -47,7 +47,6 @@ export async function POST(req: NextRequest) {
 
     // Link is_leftover_of by finding the previous dinner meal
     if (gm.is_leftover_of_dish_id) {
-      // find the dinner meal on the previous day with that dish
       const prevDate = new Date(gm.date + "T00:00:00");
       prevDate.setDate(prevDate.getDate() - 1);
       const prevDateStr = formatDate(prevDate);

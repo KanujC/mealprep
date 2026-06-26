@@ -16,7 +16,6 @@ export function parseDate(dateStr: string): Date {
 export function getWeekDates(anchorDate: Date = new Date()): Date[] {
   const d = new Date(anchorDate);
   const day = d.getDay();
-  // Monday = 0 offset
   const diff = day === 0 ? -6 : 1 - day;
   d.setDate(d.getDate() + diff);
   d.setHours(0, 0, 0, 0);
@@ -42,9 +41,5 @@ export function shortDate(date: Date): string {
 
 export function isToday(date: Date): boolean {
   const today = new Date();
-  return (
-    date.getDate() === today.getDate() &&
-    date.getMonth() === today.getMonth() &&
-    date.getFullYear() === today.getFullYear()
-  );
+  return date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
 }
